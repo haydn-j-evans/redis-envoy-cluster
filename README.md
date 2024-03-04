@@ -1,6 +1,6 @@
 <!--- app-name: Redis&reg; Cluster -->
 
-# Bitnami package for Redis(R) Cluster
+# Helm package for Redis(R) Cluster + Envoy Proxy
 
 Redis(R) is an open source, scalable, distributed in-memory cache for applications. It can be used to store and serve data in the form of strings, hashes, lists, sets and sorted sets.
 
