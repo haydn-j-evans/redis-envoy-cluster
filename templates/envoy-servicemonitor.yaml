@@ -1,0 +1,29 @@
+{{- if and ( .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" ) ( .Values.serviceMonitor.enabled )  }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: {{ template "envoy.name" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.envoy.serviceMonitor.additionalLabels }}
+{{ toYaml .Values.envoy.serviceMonitor.additionalLabels | indent 4}}
+{{- end }}
+  name: {{ template "envoy.name" . }}
+{{- if .Values.envoy.serviceMonitor.namespace }}
+  namespace: {{ .Values.envoy.serviceMonitor.namespace }}
+{{- end }}
+spec:
+  endpoints:
+  - targetPort: {{ .Values.envoy.ports.admin.containerPort }}
+    interval: {{ .Values.envoy.serviceMonitor.interval }}
+    path: "/stats/prometheus"
+  jobLabel: {{ template "envoy.name" . }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app: {{ template "envoy.name" . }}
+      release: {{ .Release.Name }}
+{{- end }} 

@@ -1,0 +1,24 @@
+{{- if .Values.envoy.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.envoy.service.name }}
+  labels:
+    app: {{ template "envoy.name" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+{{- with .Values.envoy.service.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.envoy.service.type }}
+  ports:
+  {{- range $key, $value := .Values.envoy.service.ports }}
+    - name: {{ $key }}
+{{ toYaml $value | indent 6 }}
+  {{- end }}
+  selector:
+    app: {{ template "envoy.name" . }}
+    release: {{ .Release.Name }}
+{{- end }}
